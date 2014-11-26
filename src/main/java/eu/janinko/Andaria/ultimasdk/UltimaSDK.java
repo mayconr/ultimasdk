@@ -132,6 +132,8 @@ public class UltimaSDK {
 		for (ItemData item : tiledata.getItems()) {
 			if (item.getAnimation() != 0
 					&& (!partialHue || item.getFlags().contains(TileFlag.PartialHue))) {
+			//if (/*item.getFlags().contains(TileFlag.PartialHue)
+			//		&&*/ item.getAnimation() != 0) {
 				int animid = 0xffff & item.getAnimation();
 				System.out.println(Integer.toHexString(item.getId()) + ": " + item.getName()
 						+ " - " + animid + " (" + item.getAnimation() + ") " + Integer.toHexString(animid)

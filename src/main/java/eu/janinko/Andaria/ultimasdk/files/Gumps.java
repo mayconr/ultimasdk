@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import eu.janinko.Andaria.ultimasdk.files.FileIndex.DataPack;
 import eu.janinko.Andaria.ultimasdk.files.gumps.Gump;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,7 +14,7 @@ import java.io.OutputStream;
  * @author Honza Brázdil <jbrazdil@redhat.com>
  */
 public class Gumps {
-	FileIndex fileIndex;
+	public FileIndex fileIndex;
 	File gumpmul;
 
 	public Gumps(InputStream gumpidx, File gumpmul) throws IOException{

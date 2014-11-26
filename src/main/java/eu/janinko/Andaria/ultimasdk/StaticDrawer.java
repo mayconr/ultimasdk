@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
@@ -178,18 +180,19 @@ public class StaticDrawer {
 		double tilesOnPlate = plateSize / 44.0;
 		int renderSize = (int) (Math.round(Math.ceil(tilesOnPlate)) + 15);
 
-		for(int px = 0; px < plates; px++){
+		for(int px = 13; px < plates; px++){
 			for(int py = 0; py < plates; py++){
+				if(px == 13 && py == 0) py = 9;
 				System.out.print("Rendering plate " + px + "," + py +". ");
 				int dx = plateSize * px + plateSize / 2;							// pixelový střed plate
 				int dy = plateSize * py + plateSize / 2;
-				System.out.println("Pixel center is " + dx + "," + dy +". ");
+				System.out.print("  Pixel center is " + dx + "," + dy +". ");
 				int cx = ((dx + dy)/22 - zeroX)/2;									// souřadnice ve středu
 				int cy = (((dx + dy)/22 - dx / 11) - zeroY)/2;
 				System.out.println("  Central position is " + cx + "," + cy + ".");
 				int ddx = mapA - (cy * TILE_HALFSIZE - cx * TILE_HALFSIZE);	// pixelový střed souřadnic
 				int ddy = cy * TILE_HALFSIZE + cx * TILE_HALFSIZE;
-				System.out.println("  Central position center is " + ddx + "," + ddy + ".");
+				System.out.print("  Central position center is " + ddx + "," + ddy + ".");
 				int ccx = ddx - dx;
 				int ccy = ddy - dy;
 				System.out.println("  Difference is " + ccx + "," + ccy + ".");
@@ -215,8 +218,8 @@ public class StaticDrawer {
 				}
 				ddx = mapA - (cy * TILE_HALFSIZE - cx * TILE_HALFSIZE);	// pixelový střed souřadnic
 				ddy = cy * TILE_HALFSIZE + cx * TILE_HALFSIZE;
-				System.out.println("  New central position center is " + ddx + "," + ddy + ".");
-				System.out.println("  Resulting position move is " + ccx + "," + ccy + ".");
+				System.out.print("  New central position center is " + ddx + "," + ddy + ".");
+				System.out.println(" Resulting position move is " + ccx + "," + ccy + ".");
 				int startX = cx - renderSize;
 				if(startX < 0) startX = 0;
 				int startY = cy - renderSize;
@@ -239,7 +242,13 @@ public class StaticDrawer {
 				Collections.sort(sts, new StaticPositionComparator(tiledata));
 				int i = 0;
 				for (Static s : sts) {
-					Art a = arts.getStatic(s.getId());
+					Art a;
+					try{
+						a = arts.getStatic(s.getId());
+					}catch(IOException e){
+						System.out.println("ouch");
+						continue;
+					}
 					ItemData t = tiledata.getItem(s.getId());
 					if (a == null) {
 						System.out.println(i + ": id: " + s.getId() + " name: " + t.getName() + " pos: " + s.getX() + "," + s.getY() + "," + s.getZ());
@@ -247,8 +256,18 @@ public class StaticDrawer {
 					}
 					sd.putArt(a, s.getX(), s.getY(), s.getZ());
 				}
-				File out = new File("/tmp/map/map_" + px + "_" + py + ".png");
-				ImageIO.write(sd.getImage(), "png", out);
+				final BufferedImage image = sd.getImage();
+				final String filename = "/tmp/map/map_" + px + "_" + py + ".png";
+				new Thread(new Runnable() {
+
+					public void run() {
+						try {
+							ImageIO.write(image, "png", new File(filename));
+						} catch (IOException ex) {
+							Logger.getLogger(StaticDrawer.class.getName()).log(Level.SEVERE, null, ex);
+						}
+					}
+				}).run();
 			}
 		}
 	}

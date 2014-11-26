@@ -76,8 +76,8 @@ public final class Hue {
 		StringBuilder sb = new StringBuilder("Hue ");
 		sb.append(id);
 		sb.append(": ");
-		sb.append(name);
-		sb.append(' ');
+		//sb.append(name);
+		//sb.append(' ');
 		for(int i=0; i<32; i++){
 			sb.append('[');
 			if(colors[i].isAlpha()){ // alpha

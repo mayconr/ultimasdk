@@ -80,7 +80,17 @@ public class StaticDrawer {
 		canvas.drawImage(art.getImage(), gx, gy, null);
 	}
 
-	private BufferedImage getImage() {
+	public void putStatics(List<Static> statics, Arts arts, TileData t) throws IOException{
+		List<Static> sts = new ArrayList<Static>(statics);
+		Collections.sort(sts, new StaticPositionComparator(t));
+		for(Static s : sts){
+			Art a = arts.getStatic(s.getId());
+			if (a == null) continue;
+			putArt(arts.getStatic(s.getId()), s.getX(), s.getY(), s.getZ());
+		}
+	}
+
+	public BufferedImage getImage() {
 		return image;
 	}
 
@@ -178,6 +188,9 @@ public class StaticDrawer {
 		double tilesOnPlate = plateSize / 44.0;
 		int renderSize = (int) (Math.round(Math.ceil(tilesOnPlate)) + 15);
 
+
+		List<Static> sts = new ArrayList<Static>(10000);
+		StaticPositionComparator spc = new StaticPositionComparator(tiledata);
 		for(int px = 0; px < plates; px++){
 			for(int py = 0; py < plates; py++){
 				System.out.print("Rendering plate " + px + "," + py +". ");
@@ -230,13 +243,13 @@ public class StaticDrawer {
 				System.out.println("    Starting rendering on " + startX + "," + startY + ", ending on " + stopX + "," + stopY + ".");
 
 				StaticDrawer sd = new StaticDrawer(plateSize, plateSize, cx, cy, ccx, ccy);
-				List<Static> sts = new ArrayList<Static>();
-				for(int rx = startX; rx < stopX; rx++){
-					for(int ry = startY; ry < stopY; ry++){
-						sts.addAll(statics.getStatics(rx, ry));
+				sts.clear();
+				for(int rx = startX/8; rx < stopX/8; rx++){
+					for(int ry = startY/8; ry < stopY/8; ry++){
+						sts.addAll(statics.getStaticsOnBlock(rx, ry));
 					}
 				}
-				Collections.sort(sts, new StaticPositionComparator(tiledata));
+				Collections.sort(sts, spc);
 				int i = 0;
 				for (Static s : sts) {
 					Art a = arts.getStatic(s.getId());
@@ -247,7 +260,7 @@ public class StaticDrawer {
 					}
 					sd.putArt(a, s.getX(), s.getY(), s.getZ());
 				}
-				File out = new File("/tmp/map/map_" + px + "_" + py + ".png");
+				File out = new File("/home/jbrazdil/Obrázky/mapa/map_" + px + "_" + py + ".png");
 				ImageIO.write(sd.getImage(), "png", out);
 			}
 		}

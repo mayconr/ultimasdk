@@ -24,7 +24,7 @@ public class Font {
 
         for (int i = 0; i < CHARS_COUNT; i++) {
             CharImg font = new CharImg(in, i+32);
-            font.setId((char) (i + NOPRINT_CHARS));
+            //font.setId((char) (i + NOPRINT_CHARS));
             chars.add(font);
         }
     }

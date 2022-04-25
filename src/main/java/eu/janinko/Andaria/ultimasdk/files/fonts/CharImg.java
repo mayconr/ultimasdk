@@ -45,6 +45,6 @@ public class CharImg extends Image{
         out.writeByte(width);
         out.writeByte(height);
         out.writeByte(header);
-        out.write(BitmapWriter.writeColorColumns(bitmap));
+        //out.write(BitmapWriter.writeColorColumns(bitmap));
     }
 }

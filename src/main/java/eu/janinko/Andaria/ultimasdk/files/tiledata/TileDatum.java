@@ -1,7 +1,5 @@
 package eu.janinko.Andaria.ultimasdk.files.tiledata;
 
-import jdk.internal.HotSpotIntrinsicCandidate;
-
 /**
  *
  * @author Honza Brázdil &lt;jbrazdil@redhat.com&gt;
@@ -12,7 +10,6 @@ public abstract class TileDatum {
     protected TileFlags flags;
     protected String name;
 
-    @HotSpotIntrinsicCandidate
     public TileDatum() {
     }
 
